@@ -1,3 +1,11 @@
+# Updates: 
+# (1) Updated paths for CTD files
+# (2) Colnames updated while reading chem-gene ixns
+
+
+
+
+
 # 1.    Extracting MIEs from CTD for all chemicals to use as seeds in RWR --------------
 #
 # Getting the compounds and their related genes to use as seeds in the random-walk procedure
@@ -138,13 +146,15 @@ save(chem2gene,file = 'outputData/chem2gene_no_out.RData')
                                                               
                                                               
 ##makes a dictionary with three columns cas name mesh
- ixns<-read.csv('inputData/CTD_chemicals.csv.gz',comment.char = c("#"),stringsAsFactors = F,header = F) #all compounds from CTD
+ ixns<-read.csv('inputData/CTD_june_2020/CTD_chemicals.csv.gz',comment.char = c("#"),stringsAsFactors = F,header = F) #all compounds from CTD
  ixns$V2<-gsub(pattern = 'MESH:',replacement = '',ixns$V2)
  library(data.table)
  ixns<-as.data.table(ixns)
  ixns<-ixns[,c(1,2,3)]
  colnames(ixns)<-c('name','mesh','cas')
- chem_gene<-read.csv('inputData/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #around 2000000 gene chmical interaction with 11 variables
+ chem_gene<-read.csv('inputData/CTD_june_2020/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #around 2000000 gene chmical interaction with 11 variables
+ colnames(chem_gene) <- c("ChemicalName", "ChemicalID", "CasRN", "GeneSymbol", "GeneID", "GeneForms", "Organism", "OrganismID", "Interaction", "InteractionActions", "PubMedIDs")
+
  chem_gene<-unique(chem_gene[,c("ChemicalName","ChemicalID","CasRN")])
  colnames(chem_gene)<-c('name','mesh','cas')
  ixns<-merge(ixns,chem_gene,by = c('name','mesh','cas'),all=T)

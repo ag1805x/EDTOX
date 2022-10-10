@@ -1,10 +1,16 @@
+# Notes:
+# (1) pathways_annotations_manually_curated.xlsx file used from amirhs/EDCmet_phase1_old 
+# (2) kegg.txt missing, reactome.csv generated from script 1_2 in ouput folder, manually  copied to input folder
+
+
+
 #Preparation of the excel file and pretreatment of the pathways 
 # load("outputData/class_probilities/integrated_fgsea_allcompounds_results_final.RData")
 # pathways_list<-Reduce('union',lapply(fgs, function(x)colnames(x$x)))
 # source('functions/annotation_functions.R')
 # intg<-as.data.frame(list(pathways_list,annotated_pathways))
 # colnames(intg)<-c('pathway','annotation')
-### The fle was manually curated in excels and those related to diseases were signed as 0 and those realted to MOA as 1 then
+### The file was manually curated in excels and those related to diseases were signed as 0 and those realted to MOA as 1 then
 # 
 load('outputData/toxdb2gene_final.RData')
 moa_pathways<-xlsx::read.xlsx('outputData/excel_files/pathways_annotations_manually_curated.xlsx',sheetIndex = 1)

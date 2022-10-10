@@ -1,3 +1,8 @@
+# Updates:
+# (1) In consensus network creation data.frame creation, stringsAsFactors = TRUE added to avaoid error
+# (2) The final variable to save was changed
+
+
 
 # 3. wTO LINCS ---------------------------------------------------------------
 library(cmapR)
@@ -17,6 +22,9 @@ in_9071<-liver_expr$in_9071_rat_liver_expressed_set=='Yes'
 has_orth<-!is.na(liver_expr$HUMAN_ORTHOLOG_ENTREZ)
 human_orth<-as.character(liver_expr$HUMAN_ORTHOLOG_ENTREZ[in_9071&has_orth])
 my_ds<-lapply(my_ds,function(x){y=x@mat;y[rownames(y)%in%human_orth,]})
+
+
+
 library(doParallel)
 library(wTO)
 cl<-makeCluster(2)
@@ -24,6 +32,9 @@ registerDoParallel(cl)
 wTO_LINCS<-foreach(i=1:length(my_ds),.export = 'wTO.fast') %dopar% wTO.fast(Data=as.data.frame(my_ds[[i]]),
                                                                             method = 'p', sign = 'sign',method_resampling = "Bootstrap",delta = 0.2)
 stopCluster(cl)
+
+
+
 # consensus network
 get_final_wTO<-function(x){
   
@@ -31,15 +42,20 @@ get_final_wTO<-function(x){
   x$Node.2<-as.character(x$Node.2)
   return(x)
 }
+
+
+
 wTO_LINCS<-lapply(wTO_LINCS,get_final_wTO)
 wTO_LINCS_cons<-wTO.Consensus(data=list(wTO_Data1=data.frame(Node.1=wTO_LINCS[[1]]$Node.1,
                                                              Node.2=wTO_LINCS[[1]]$Node.2,
                                                              wTO=wTO_LINCS[[1]]$wTO,
-                                                             pval=wTO_LINCS[[1]]$pval),
+                                                             pval=wTO_LINCS[[1]]$pval,
+							     stringsAsFactors = TRUE),
                                         wTO_Data2=data.frame(Node.1=wTO_LINCS[[2]]$Node.1,
                                                              Node.2=wTO_LINCS[[2]]$Node.2,
                                                              wTO=wTO_LINCS[[2]]$wTO,
-                                                             pval=wTO_LINCS[[2]]$pval)))
+                                                             pval=wTO_LINCS[[2]]$pval,
+							     stringsAsFactors = TRUE)))
 
-save(wTO_LINCS,file = 'outputData/network/wTO_LINCS_cons.RData')
-
+# save(wTO_LINCS,file = 'outputData/network/wTO_LINCS_cons.RData')
+save(wTO_LINCS_cons,file = 'outputData/network/wTO_LINCS_cons.RData')

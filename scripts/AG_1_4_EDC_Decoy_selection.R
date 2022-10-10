@@ -1,3 +1,11 @@
+# Updates;
+# (1) CTD files path updated
+# (2) Chem gene ixn col names updated after file read
+# (3) distinct() function was not working as designed. Rewritten!
+# (4) chem2gene is a list so rownames() will not work
+# (5) The number of EDC, Decoy changed from 197 to 197, 1462 to 1337
+# (6) Why the script generates different number of EDC_decoy??? Need checking 
+
 
 # 4.1   EDC and decoy selection -----------------------------------------------
 load("outputData/toxcast_direct_based_NR_coreg_from_TOXCAST_binary.RData")   #list of toxcast compounds for NR receptors
@@ -109,45 +117,51 @@ ggplot(data,aes(x=reorder(data$Assay_Endpoints,-data$Active_Compounds),y=Active_
 
 
 # integrating with the compounds in CTD with calculated MIEs
-ixns<-read.csv('inputData/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #all compounds from CTD
+ixns<-read.csv('inputData/CTD_june_2020/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #all compounds from CTD
+colnames(ixns)<-c("ChemicalName","ChemicalID", "CasRN","GeneSymbol", "GeneID","GeneForms",
+                  "Organism","OrganismID","Interaction" ,"InteractionActions", "PubMedIDs")
 library(data.table)
 ixns<-as.data.table(ixns)
 library(dplyr)
-ixns<-ixns %>% distinct(ixns$CasRN,ixns$ChemicalID)
+# ixns<-ixns %>% distinct(ixns$CasRN,ixns$ChemiscalID)
+ixns<-ixns[, c("CasRN", "ChemicalID")] %>% distinct()
 chemnames<-rownames(edc_hitc_NR)
 edc_hitc_NR<-as.data.table(edc_hitc_NR)
 edc_hitc_NR$cas<-chemnames
 colnames(ixns)<-c('cas','chem')
 edc_in_ctd<-merge(edc_hitc_NR,ixns)               #228 edcs
 load('outputData/chem2gene_no_out.RData')
-ed_ind<-which(rownames(chem2gene) %in% edc_in_ctd$chem)
-
-edc199<-chem2gene[ed_ind]
+# ed_ind<-which(rownames(chem2gene) %in% edc_in_ctd$chem)
+ed_ind<-which(names(chem2gene) %in% edc_in_ctd$chem)
+# edc197<-chem2gene[ed_ind]
+edc197<-chem2gene[ed_ind]
 
 
 #### NEGATIVE CONTROL SELECTION
 # selection based on the most disimilar compound compared to edcs in terms of MIEs
 # calculation of jaccard dissimilarity between edcs and OTHER COMPOUNDS IN CTD
-jan<-matrix(NA, nrow = length(edc199), ncol = length(chem2gene))
+# jan<-matrix(NA, nrow = length(edc197), ncol = length(chem2gene))
+jan<-matrix(NA, nrow = length(edc197), ncol = length(chem2gene))
+
 for (i in 1:dim(jan)[1]){
   for (j in 1:dim(jan)[2]){
-    l1<-length(intersect(edc199[[i]],chem2gene[[j]]))
-    l2<-length(union(edc199[[i]],chem2gene[[j]]))
+    l1<-length(intersect(edc197[[i]],chem2gene[[j]]))
+    l2<-length(union(edc197[[i]],chem2gene[[j]]))
     jan[i,j]<-(1-(l1/l2))
   }
 }
 
 ind_disimilar<-which(apply(jan, 2,mean)==1)  #selecting those compounds as decoys with average jaccard dissimilarity equal to 1 
 decoys<-chem2gene[ind_disimilar]
-new_edc199_decoy_1462<-c(edc199,decoys)
-save(new_edc199_decoy_1462,file='outputData/new199edc_1462dec.RData')
+new_edc197_decoy_1337<-c(edc197,decoys)
+save(new_edc197_decoy_1337,file='outputData/new197edc_1337dec.RData')
 
 # 4.2   Visualization of EDCs and decoys dissimililarities as heatmap PLOT---------
 
-load('outputData/new199edc_1462dec.RData')
-input<-new_edc199_decoy_1462              #decoys based on CTD
-nedc<-199
-ndecoy<-1462
+load('outputData/new197edc_1337dec.RData')
+input<-new_edc197_decoy_1337              #decoys based on CTD
+nedc<-197
+ndecoy<-1337
 # 
 jan<-matrix(NA, nrow = length(input), ncol = length(input))
 for (i in 1:(length(input)-1)){
@@ -171,7 +185,7 @@ plot(heat_map(melted_cormat,melted_cormat$value,melted_cormat$X1,melted_cormat$X
 
 source('functions/general_functions.R')                # jaccrd_dissimilarity function for binary matrices
 load('outputData/chem2gene_no_out.RData')              # All mies in CTD
-load('outputData/new199edc_1462dec.RData')             # MIEs for edcs and decoys
+load('outputData/new197edc_1337dec.RData')             # MIEs for edcs and decoys
 all_genenes<-unique(unlist(sapply(chem2gene,function(x)x)))
 binary_MIE<-matrix(0, nrow = length(chem2gene), ncol = length(all_genenes))
 for  (i in 1:length(chem2gene)){
@@ -179,14 +193,17 @@ for  (i in 1:length(chem2gene)){
 }
 colnames(binary_MIE)<-all_genenes
 rownames(binary_MIE)<-names(chem2gene)
-training_set<-binary_MIE[names(new_edc199_decoy_1462),]
+training_set<-binary_MIE[names(new_edc197_decoy_1337),]
 jac<-jaccrd_dissimilarity(training_set)
 km <- kmeans(jac, centers = 2, nstart=25)
-km$cluster<-c(rep(1,199),rep(2,1462))
+# km$cluster<-c(rep(1,197),rep(2,1337))
+km$cluster<-c(rep(1,197),rep(2,1337))
 library(cluster)
 ss<-silhouette(km$cluster, jac)
-mean(ss[1:199,3 ]) 
-sil_MIE_edcs<-mean(ss[1:199,3 ])
+# mean(ss[1:197,3 ]) 
+mean(ss[1:197,3 ]) 
+# sil_MIE_edcs<-mean(ss[1:197,3 ])
+sil_MIE_edcs<-mean(ss[1:197,3 ])
 save(sil_MIE_edcs,file='outputData/silhouettescores_MIE_edcs.RData')
 
 

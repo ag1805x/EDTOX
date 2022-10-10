@@ -1,4 +1,7 @@
-
+# Updates:
+# (1) Updated STRINGdb version
+# 
+# 
 source("functions/general_functions.R") #functions  jaccard dissimilarity
 library(STRINGdb)
 library(igraph)
@@ -9,17 +12,25 @@ load("outputData/new199edc_1462dec.RData")
 new_edc199_decoy_1462<-as.array(new_edc199_decoy_1462)
 
 
-perclist<-c(0.6,0.65,0.7,0.75,0.8,0.85)       
+perclist<-c(0.6,0.65,0.7,0.75,0.8,0.85)
 nglist<-c(200,500,700,1000)      #The number of most top visited genes to consider for jaccard dissimilarity
 
 
-string_db<-STRINGdb$new(version="10",species=9606)
+combscore<-0.85       
+# string_db<-STRINGdb$new(version="10",species=9606)
+string_db<-STRINGdb$new(version="11.5",species=9606)
 entz_id<-data.frame(entz_id=keys(org.Hs.egGENENAME),stringsAsFactors = F)
 string_ids<-string_db$map(my_data_frame=entz_id,my_data_frame_id_col_names='entz_id',removeUnmappedRows=T)
 string_inter<-string_db$get_interactions(string_ids$STRING_id)
-string_inter<-string_inter[,-grep('coexpression',names(string_inter))]
-sel_inter<-1-(string_inter[,3:(ncol(string_inter)-1)]/1000)
-string_inter$combined_score<-1-Reduce('*',sel_inter)
+
+
+# string_inter<-string_inter[,-grep('coexpression',names(string_inter))]
+# sel_inter<-1-(string_inter[,3:(ncol(string_inter)-1)]/1000)
+# string_inter$combined_score<-1-Reduce('*',sel_inter)
+
+edge_list<-string_inter[string_inter$combined_score>=combscore,1:2]
+edge_list<-merge(edge_list,string_ids,by.x='from',by.y='STRING_id')
+edge_list<-merge(edge_list,string_ids,by.x='to',by.y='STRING_id')[,3:4]
 
 silm<-matrix(NA, nrow = length(perclist), ncol = length(nglist))
 rownames(silm)<-perclist

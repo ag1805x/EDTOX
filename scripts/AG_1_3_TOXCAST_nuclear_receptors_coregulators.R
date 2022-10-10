@@ -1,3 +1,8 @@
+# Updates:
+# (1) CTD file path updated
+# (2) distinct() function was not working as designed. Rewritten!
+
+
 # 3.    Retrieving Nuclear_receptor_ENDPOINTS from TOXCAST --------------------------------------
 # Subseting nuclear receptors and their coregulators from the toxcast hitc binary file based on two data sources
 # one from NRs and coregs (NURSA) and one from our experts
@@ -47,10 +52,13 @@ for (i in 1:dim(toxcast_3_1)[1]){
 hitc_mat_NR_Coreg<-toxcast_3_1[,which(colnames(toxcast_3_1) %in% nr_assays_names)]
 hitc_mat_MIE<-toxcast_3_1[,which(colnames(toxcast_3_1) %in% mie_assay_names)]
 save(toxcast_3_1,hitc_mat_NR_Coreg,hitc_mat_MIE,file='outputData/toxcast_direct_based_NR_coreg_from_TOXCAST_binary.RData')# Toxcast chemicals,NR endpoints
-ixns<-read.csv('inputData/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #all compounds from CTD
+ixns<-read.csv('inputData/CTD_june_2020/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),stringsAsFactors = F) #all compounds from CTD
+colnames(ixns)<-c("ChemicalName","ChemicalID", "CasRN","GeneSymbol", "GeneID","GeneForms",
+                  "Organism","OrganismID","Interaction" ,"InteractionActions", "PubMedIDs")
 library(data.table)
 ixns<-as.data.table(ixns)
-ixns<-ixns %>% distinct(ixns$CasRN,ixns$ChemicalID)
+# ixns<-ixns %>% distinct(ixns$CasRN,ixns$ChemiscalID)
+ixns<-ixns[, c("CasRN", "ChemicalID")] %>% distinct()
 colnames(ixns)<-c('cas','chem')
 hitc_mat_NR_Coreg<-as.data.frame(hitc_mat_NR_Coreg)
 hitc_mat_NR_Coreg$cas<-rownames(hitc_mat_NR_Coreg)

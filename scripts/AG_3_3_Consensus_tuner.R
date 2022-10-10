@@ -1,9 +1,13 @@
+# Updates:
+# (1) 
+
 
 source("functions/general_functions.R") #functions  jaccard dissimilarity
 load("outputData/new199edc_1462dec.RData")
 load("outputData/network/wTO_hep_cons.RData")
 load("outputData/network/wTO_LINCS_cons.RData")
 all_cons<-list(wTO_hep_cons,wTO_LINCS_cons)
+
 names(all_cons)<-c('hep_cons','lincs_cons') 
 new_edc199_decoy_1462<-as.array(new_edc199_decoy_1462)
 library(dnet)
@@ -15,6 +19,7 @@ nglist<-c(200,500,700,1000)            #The number of most top visited genes to 
 
 #network preparation and edge cutoffs
 for (l in 1:length(all_cons)){
+  print(l)
   x<-all_cons[[l]]
   x$Node.1<-as.character(x$Node.1)               #pairwise calculation so length(node1)=length(node2)=length(wTO)=length(pval)=length(pval.adjusted)      
   x$Node.2<-as.character(x$Node.2)
@@ -25,6 +30,7 @@ for (l in 1:length(all_cons)){
   colnames(silm)<-nglist
   ind_per<-0
   for (perc in perclist ){
+    print(perc)
     ind_ng<-0
     ind_per<-ind_per+1
     gr<-graph_from_data_frame(x[order(x$CN,decreasing = T),1:2][1:round(nrow(x)*perc),],directed=F)  #gettting the   percent of weighted edge values

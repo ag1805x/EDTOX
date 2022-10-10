@@ -1,3 +1,5 @@
+# Updates:
+# (1) In consensus network creation data.frame creation, stringsAsFactors = TRUE added to avaoid error
 
 # 4. wTO Consensus -----------------------------------------------------------
 
@@ -16,11 +18,13 @@ library(wTO)
 wTO_hep_cons<-wTO.Consensus(data=list(wTO_Data1=data.frame(Node.1=wTO_hep[[1]]$Node.1,
                                                            Node.2=wTO_hep[[1]]$Node.2,
                                                            wTO=wTO_hep[[1]]$wTO,
-                                                           pval=wTO_hep[[1]]$pval),
+                                                           pval=wTO_hep[[1]]$pval,
+							   stringsAsFactors = TRUE),
                                       wTO_Data2=data.frame(Node.1=wTO_hep[[2]]$Node.1,
                                                            Node.2=wTO_hep[[2]]$Node.2,
                                                            wTO=wTO_hep[[2]]$wTO,
-                                                           pval=wTO_hep[[2]]$pval)))
+                                                           pval=wTO_hep[[2]]$pval,
+							   stringsAsFactors = TRUE)))
 save(wTO_hep_cons,file='outputData/network/wTO_hep_cons.RData')
 
 

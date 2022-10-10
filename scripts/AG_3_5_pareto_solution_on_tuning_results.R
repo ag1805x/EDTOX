@@ -1,6 +1,12 @@
+# Updates:
+# (1) Updated paths for input
+
+ 
 library(rPref)
 library(knitr)
-load("outputData/tune_edge_gset/ppi/Sil_PPI.RData")
+# load("outputData/tune_edge_gset/ppi/Sil_PPI.RData")
+load("outputData/tuning/ppi/Sil_PPI.RData")
+
 data<-stack(as.data.frame(silm))
 data$ind<-as.numeric(c(rep(200,6),rep(500,6),rep(700,6),rep(1000,6)))
 gset<-rep(c(.6,.65,.7,.75,.8,.85),4)
@@ -11,7 +17,9 @@ ps$network<-'ppi'
 li<-list.files(path=paste(getwd(),'/outputData/tune_edge_gset',sep=''),pattern = 'RData')
 for (i in li){
   nam<-tools::file_path_sans_ext(i)
-  load(paste(getwd(),'/outputData/tune_edge_gset/',i,sep=''))
+  # load(paste(getwd(),'/outputData/tune_edge_gset/',i,sep=''))
+  load(paste(getwd(),'/outputData/tuning/',i,sep=''))
+  
   data<-stack(as.data.frame(silm))
   data$ind<-as.numeric(c(rep(200,4),rep(500,4),rep(700,4),rep(1000,4)))
   gset<-rep(c(2,3,5,10),4)

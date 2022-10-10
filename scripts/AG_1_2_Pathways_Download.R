@@ -1,3 +1,7 @@
+# Updates:
+# (1) CTD path update
+# (2) In msigdb GO changed to GOBP so had to update
+
 # 2.   Retrieving pathways from KEGG,REACTOME,WIKI,msigdb and GO for FGSEA ----------------------------------------------------------------------
 # Pathways related to wikiaop (GO and GO with offsprings), KEGG, REACTOME,msigdb and wiki pathways are retrieved
 # output :outputData/toxdb2gene_final.RData
@@ -33,7 +37,7 @@ go_desc<-go_desc[sapply(go_desc,length)>0]
 go2gene<-lapply(go_desc,function(x)unique(unlist(mget(x,revmap(org.Hs.egGO))))) # GO terms with their corresponding genes in "go2gene"
 
 #####USING KEGG  pathways from CTD genes pathways
-ptw<-read.csv('inputData/CTD_genes_pathways.csv.gz',stringsAsFactors = F,comment.char ="#",header = F)  
+ptw<-read.csv('inputData/CTD_june_2020/CTD_genes_pathways.csv.gz',stringsAsFactors = F,comment.char ="#",header = F)  
 kegg<-ptw[grepl('KEGG',ptw$V4),]                                                    #Getting Column V4 with KEGG terms as (pathways)
 kegg2gene<-sapply(unique(kegg$V4),function(x)as.character(kegg$V2[kegg$V4==x]))     #For each KEGG term the related genes are assigned and saved in "kegg2gene"
 #####REACTOME
@@ -58,14 +62,16 @@ rm(list=c('all_genes','human_rec_names','react','reactom','to_remove','mapped_ge
 # msigdb pathways
 library(msigdbr)
 m_df = msigdbr(species = "Homo sapiens")
-m_df_ids = m_df$gs_subcat=='BP'| m_df$gs_subcat=='MF'
+# m_df_ids = m_df$gs_subcat=='BP'| m_df$gs_subcat=='MF'
+m_df_ids = m_df$gs_subcat=='GO:BP'| m_df$gs_subcat=='GO:MF'
 m_df<-m_df[m_df_ids,]                         
 pat_nam=unique(m_df$gs_name)
 msi<-lapply(pat_nam,function(x)m_df$entrez_gene[m_df$gs_name==as.character(x)])
 names(msi)=pat_nam
 msigdb2gene<-lapply(msi, function(x)as.character(x))
 load("inputData/c5.go.mapping.rda")
-q<-unlist(lapply(names(msigdb2gene),function(x)gsub(pattern = 'GO_',replacement = '',x)))
+# q<-unlist(lapply(names(msigdb2gene),function(x)gsub(pattern = 'GO_',replacement = '',x)))
+q<-unlist(lapply(names(msigdb2gene),function(x)gsub(pattern = 'GOBP_',replacement = '',x)))
 goids<-c5.go.mapping$goid[which(c5.go.mapping$description %in% q)]
 go2gene<-go2gene[-which(names(go2gene)%in% goids)]
 go2gene_noDesc<-go2gene_noDesc[-which(names(go2gene_noDesc)%in% goids)]
