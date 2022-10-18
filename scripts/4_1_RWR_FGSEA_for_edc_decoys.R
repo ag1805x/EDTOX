@@ -1,7 +1,7 @@
 
 source("functions/pipeline.R")                                                 # pipeline functions
 load('outputData/toxdb2gene_final.RData')                                      # pathways file
-load("outputData/new199edc_1462dec.RData")                                     # seeds from edc and decoys
+load("outputData/new197edc_1337dec.RData")                                     # seeds from edc and decoys
 tox2db<-c(go2gene,kegg2gene,reactome2gene,wikiptw2gene,msigdb2gene)            # tox2db is all pathways
 
 library(BiocParallel)
@@ -11,28 +11,28 @@ library(BiocParallel)
 load("outputData/network/wTO_DM.RData")
 #1. DM_hepatocytes.1
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_DM[[1]],tox2db,0.1,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_DM[[1]],tox2db,0.1,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/DM_hep.RData')
 gc()
 
 #2. DM_liver.1
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_DM[[2]],tox2db,0.1,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_DM[[2]],tox2db,0.1,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/DM1.RData')
 gc()
 
 #3. DM_liver.3
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_DM[[3]],tox2db,0.05,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_DM[[3]],tox2db,0.05,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/DM3.RData')
 gc()
 
 #4. DM_liver.5
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_DM[[4]],tox2db,0.05,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_DM[[4]],tox2db,0.05,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/DM5.RData')
 gc()
@@ -43,55 +43,55 @@ gc()
 load("outputData/network/wTO_TGG.RData")
 #1.TG-gate-human-innvitro
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[1]],tox2db,0.02,700,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[1]],tox2db,0.02,700,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/TGG_human_in_vitro.RData')
 gc()
 
 #2.TG-gate-rat-innvitro
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[2]],tox2db,0.05,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[2]],tox2db,0.05,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/TGG_rat_in_vitro.RData')
 gc()
 
 #3.TGG_rat_in_vivo_rep.15 day
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[3]],tox2db,0.02,200,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[3]],tox2db,0.02,200,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/TGG_rat_in_vivo_rep_15_day.RData')
 gc()
 
 #4.TGG_rat_in_vivo_rep.29 day
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[4]],tox2db,0.05,500,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[4]],tox2db,0.05,500,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/TGG_rat_in_vivo_rep_29_day.RData')
 gc()
 
 #5.TGG_rat_in_vivo_rep.8 day
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[5]],tox2db,0.05,700,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[5]],tox2db,0.05,700,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/TGG_rat_in_vivo_rep_8_day.RData')
 gc()
 
 #6. "TGG_rat_in_vivo_single.High"
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[6]],tox2db,0.05,700,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[6]],tox2db,0.05,700,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/Fgsea_tg_single.high.RData')
 
 #7."TGG_rat_in_vivo_single.Low" 
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[7]],tox2db,0.05,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[7]],tox2db,0.05,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/Fgsea_tg_single.low.RData')
 gc()
 
 #8."TGG_rat_in_vivo_single.Middle"
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline(wTO_TGG[[8]],tox2db,0.05,700,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline(wTO_TGG[[8]],tox2db,0.05,700,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/Fgsea_tg_single.middle.RData')
 
@@ -100,7 +100,7 @@ save(fgsea_res,file = 'outputData/edc_decoy_fgsea/Fgsea_tg_single.middle.RData')
 load('outputData/network/wTO_hep_cons.RData')
 #1. Consensus hepatocyte
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline_consensus(wTO_hep_cons,tox2db,0.05,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline_consensus(wTO_hep_cons,tox2db,0.05,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/hep_cons.RData')
 gc()
@@ -108,7 +108,7 @@ gc()
 load('outputData/network/wTO_LINCS_cons.RData')
 #2. Consensus LINCSs
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline_consensus(wTO_LINCS_cons,tox2db,0.1,700,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline_consensus(wTO_LINCS_cons,tox2db,0.1,700,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/lincs_cons.RData')
 gc()
@@ -120,7 +120,7 @@ gc()
 
 #1.
 p<-bpstart(MulticoreParam(40))
-fgsea_res<-pipeline_ppi(tox2db,0.85,1000,new_edc199_decoy_1462,p)
+fgsea_res<-pipeline_ppi(tox2db,0.85,1000,new_edc197_decoy_1337,p)
 bpstop(p)
 save(fgsea_res,file = 'outputData/edc_decoy_fgsea/ppi.RData')
 gc()

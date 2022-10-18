@@ -1,5 +1,12 @@
 # Updates:
 # (1) The EDC Decoy file is changed /// using the 197+1336 file
+# (2) Added a code to unregister do parallel. Was causing error during second training.
+
+
+unregister_dopar <- function() {
+  env <- foreach:::.foreachGlobals
+  rm(list=ls(name=env), pos=env)
+}
 
 
 # 1.Glm modeling on all toxicogenimics data layers ---------------------------------------------------------------------
@@ -33,6 +40,8 @@ cl<-makeCluster(length(fgs))
 registerDoParallel(cl)
 modls<-foreach(i=1:length(fgs),.packages='caret') %dopar% elastic_net_model(fgs[[i]]$x,fgs[[i]]$y,train_control) # model for each layer
 stopCluster(cl)
+unregister_dopar()
+
 names(modls)<-names(fgs)
 #save(modls,file="outputData/glm/glm_models_final.RData") #NES none_scaled
 save(modls,file="outputData/glm/glm_models_final_moa.RData") #NES none_scaled with only MOA pathways
@@ -47,7 +56,7 @@ source("functions/glm_functions.R")
 library(caret)
 load('outputData/chem2gene_no_out.RData')
 # load('outputData/new199edc_1462dec.RData')
-load("outputData/new197edc_1336dec.RData")
+load("outputData/new197edc_1337dec.RData")
 all_genenes<-unique(unlist(sapply(chem2gene,function(x)x)))
 binary_MIE<-matrix(0, nrow = length(chem2gene), ncol = length(all_genenes))
 for  (i in 1:length(chem2gene)){
@@ -56,7 +65,7 @@ for  (i in 1:length(chem2gene)){
 colnames(binary_MIE)<-all_genenes
 rownames(binary_MIE)<-names(chem2gene)
 # training_set<-binary_MIE[names(new_edc199_decoy_1462),]
-training_set<-binary_MIE[names(new197edc_1336dec.RData),]
+training_set<-binary_MIE[names(new_edc197_decoy_1337),]
 
 response<-rep('decoy',nrow(training_set)) # y vector
 # response[1:199]<-'edc'

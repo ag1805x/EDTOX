@@ -1,4 +1,5 @@
 #!/bin/bash
+# retireving the tags for KEGG pathways
 rm -rf *.tag
 rm -rf pathway.html 
 wget https://www.genome.jp/kegg/pathway.html

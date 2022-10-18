@@ -13,8 +13,7 @@
 # output: list of chemical and their related MIEs (genes) outputData/chem2gene_no_out.RData 
 #
 # compound gene interarctions release of june 2020
-ixns<-read.csv('inputData/CTD_june_2020/CTD_chem_gene_ixns.csv.gz',comment.char = c("#"),
-               stringsAsFactors = F) 
+ixns<-read.csv('inputData/CTD_june_2020/CTD_chem_gene_ixns.csv.gz', comment.char = c("#"), stringsAsFactors = F) 
 colnames(ixns)<-c("ChemicalName","ChemicalID", "CasRN","GeneSymbol", "GeneID","GeneForms",
                   "Organism","OrganismID","Interaction" ,"InteractionActions", "PubMedIDs")
 library(data.table)

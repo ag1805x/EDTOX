@@ -3,13 +3,13 @@
 
 
 source("functions/general_functions.R") #functions  jaccard dissimilarity
-load("outputData/new199edc_1462dec.RData")
+load("outputData/new197edc_1337dec.RData")
 load("outputData/network/wTO_hep_cons.RData")
 load("outputData/network/wTO_LINCS_cons.RData")
 all_cons<-list(wTO_hep_cons,wTO_LINCS_cons)
 
 names(all_cons)<-c('hep_cons','lincs_cons') 
-new_edc199_decoy_1462<-as.array(new_edc199_decoy_1462)
+new_edc197_decoy_1337<-as.array(new_edc197_decoy_1337)
 library(dnet)
 library(igraph)
 library(cluster)
@@ -34,7 +34,7 @@ for (l in 1:length(all_cons)){
     ind_ng<-0
     ind_per<-ind_per+1
     gr<-graph_from_data_frame(x[order(x$CN,decreasing = T),1:2][1:round(nrow(x)*perc),],directed=F)  #gettting the   percent of weighted edge values
-    d_sign<-lapply(new_edc199_decoy_1462,function(x)intersect(x,V(gr)$name))    #intersection of the genes in the graph and the genes related to the compunds
+    d_sign<-lapply(new_edc197_decoy_1337,function(x)intersect(x,V(gr)$name))    #intersection of the genes in the graph and the genes related to the compunds
     d_sign<-d_sign[sapply(d_sign,length)>0]                     #omitting chemicals with no intersected genes inside the graph 
     mat<-sapply(d_sign,function(x)(V(gr)$name%in%x)*1)           #matrix of the genes in the row and chemicals in the columns
     rownames(mat)<-V(gr)$name 
@@ -57,8 +57,8 @@ for (l in 1:length(all_cons)){
       pro<-t(pro)
       jac<-jaccrd_dissimilarity(pro)
       #silhouette plot
-      ndecoy<-length(which(names(new_edc199_decoy_1462)[200:1661] %in% rownames(pro)))
-      nedc<-length(which(names(new_edc199_decoy_1462)[1:199] %in% rownames(pro)))
+      ndecoy<-length(which(names(new_edc197_decoy_1337)[198:1534] %in% rownames(pro)))
+      nedc<-length(which(names(new_edc197_decoy_1337)[1:197] %in% rownames(pro)))
       resp<-c(rep(1,nedc),rep(0,ndecoy)) 
       km <- kmeans(jac, centers = 2, nstart=25)
       km$cluster<-resp

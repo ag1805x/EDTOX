@@ -1,13 +1,16 @@
+# Updates:
+# (1) The EDC Decoy file is changed /// using the 197+1336 file
+
 
 # 1.For only EDCs and Decoys preparation of data from FGSEA files from toxicogenomics pipeline -------------------------------------------------------------
 #Data preparation from customized networks
 source("functions/glm_functions.R")                    # data_preparation function
 source('functions/general_functions.R')
-load("outputData/new199edc_1462dec.RData")             # edc decoys 
+load("outputData/new197edc_1337dec.RData")             # edc decoys 
 load("outputData/toxdb2gene_final.RData")              # pathways
 setwd('outputData/edc_decoy_fgsea/')
 li<-list.files(path='.',pattern = 'RData')
-edcs<-names(new_edc199_decoy_1462)[1:199]
+edcs<-names(new_edc197_decoy_1337)[1:197]
 #fgs<-data_preparation(li,edcs,toxdb_names)             #1st run with all pathways
 fgs<-data_preparation(li,edcs,names(moa_pathways))      #2nd with selected pathways
 
@@ -31,11 +34,11 @@ save(used_pathways,file='outputData/glm/used_pathways_glm_moa.RData')
 # preparation of integrated dataframe from fgsea files performed on SAMPO cluster at UEF--------------------------------------------------------------------
 source('functions/glm_functions.R')
 source('functions/general_functions.R')
-load('outputData/new199edc_1462dec.RData')
+load('outputData/new197edc_1337dec.RData')
 load('outputData/toxdb2gene_final.RData')
 setwd('outputData/all_compounds_fgsea/')
 li<-list.files(path='.',pattern = 'RData')
-edcs<-names(new_edc199_decoy_1462)[1:199]
+edcs<-names(new_edc197_decoy_1337)[1:197]
 #fgs<-data_preparation(li,edcs,toxdb_names) #NES_scores with  no scaling
 fgs<-data_preparation(li,edcs,names(moa_pathways)) #NES_scores with  no scaling the function is in glm_functions.R
 names(fgs)<-name_correct(names(fgs)) #gneral_functions.R

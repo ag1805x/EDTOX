@@ -8,8 +8,8 @@ library(igraph)
 library(org.Hs.eg.db)
 library(dnet)
 library(cluster)
-load("outputData/new199edc_1462dec.RData")
-new_edc199_decoy_1462<-as.array(new_edc199_decoy_1462)
+load("outputData/new197edc_1337dec.RData")
+new_edc197_decoy_1337<-as.array(new_edc197_decoy_1337)
 
 
 perclist<-c(0.6,0.65,0.7,0.75,0.8,0.85)
@@ -47,7 +47,7 @@ for (perc in perclist ){
   edge_list<-merge(edge_list,string_ids,by.x='to',by.y='STRING_id')[,3:4]
   colnames(edge_list)<-c('Node.1','Node.2')
   gr<-graph_from_edgelist(as.matrix(edge_list),directed=F)
-  d_sign<-lapply(new_edc199_decoy_1462,function(x)intersect(x,V(gr)$name))    #intersection of the genes in the graph and the genes related to the compunds
+  d_sign<-lapply(new_edc197_decoy_1337,function(x)intersect(x,V(gr)$name))    #intersection of the genes in the graph and the genes related to the compunds
   d_sign<-d_sign[sapply(d_sign,length)>0]                     #omitting chemicals with no intersected genes inside the graph 
   mat<-sapply(d_sign,function(x)(V(gr)$name%in%x)*1)           #matrix of the genes in the row and chemicals in the columns
   rownames(mat)<-V(gr)$name 
@@ -75,8 +75,8 @@ for (perc in perclist ){
     jac<-jaccrd_dissimilarity(pro)
 
     #silhouette score
-    ndecoy<-length(which(rownames(new_edc199_decoy_1462)[200:1661] %in% rownames(pro)))
-    nedc<-length(which(rownames(new_edc199_decoy_1462)[1:199] %in% rownames(pro)))
+    ndecoy<-length(which(rownames(new_edc197_decoy_1337)[198:1534] %in% rownames(pro)))
+    nedc<-length(which(rownames(new_edc197_decoy_1337)[1:197] %in% rownames(pro)))
     resp<-c(rep(1,nedc),rep(0,ndecoy)) 
     km <- kmeans(jac, centers = 2, nstart=25)
     km$cluster<-resp
